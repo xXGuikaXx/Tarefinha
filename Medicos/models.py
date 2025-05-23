@@ -228,7 +228,7 @@ class Pacientes(models.Model):
             ('A-','A-'),
             ('B-','B-'),
             ('AB-','AB-'),
-            ('O-','O-'),
+            ('Z-','O-'),
         ]
     )
 
