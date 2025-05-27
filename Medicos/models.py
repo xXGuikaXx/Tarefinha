@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from pydoc import Helper
 from django.utils import timezone
-from .validators import validate_telefone
+from .validators import validate_telefone,validate_cpf
 
 
 from django.db import models
@@ -41,9 +41,10 @@ class Medico(models.Model):
     especialidade = models.ManyToManyField(Especialidade)
 
     crm = models.CharField(
-        max_length=6,
+        max_length=9,
+        min_length=6,
         verbose_name='CRM',
-        help_text='CRM do Medico',
+        help_text='Ex: 123456 ou 123456-SP',
         unique=True
     )
     telefone = models.CharField(
@@ -65,7 +66,8 @@ class Medico(models.Model):
         max_length=12,
         verbose_name='CPF',
         help_text='CPF do Medico',
-        unique=True
+        unique=True,
+        validators=[validate_cpf]
     )
     status = models.CharField(
         max_length=100,
@@ -88,11 +90,6 @@ class Medico(models.Model):
 
         idade = get_idade(self.data_nascimento)
 
-        if len(self.crm) < 6:
-            raise ValidationError(f'O CRM deve ter 6 digitos')
-
-        if str.isalpha(self.cpf):
-            raise ValidationError(f'O cpf não pode conter letras')
 
 
 
@@ -110,7 +107,8 @@ class Enfermeiros(models.Model):
         help_text='Nome do Enfermeiro'
     )
     coren = models.CharField(
-        max_length=6,
+        max_length=13,
+        min_length=13,
         verbose_name='COREN',
         help_text='COREN do enfermeiro',
         unique=True
@@ -144,7 +142,8 @@ class Enfermeiros(models.Model):
         max_length=12,
         verbose_name='CPF',
         help_text='CPF do ENfermeiro',
-        unique=True
+        unique=True,
+        validators=[validate_cpf]
     )
     turno = models.CharField(
         max_length=100,
@@ -180,9 +179,6 @@ class Enfermeiros(models.Model):
         if len(self.coren) < 6:
             raise ValidationError(f'O CRM deve ter 6 digitos')
 
-        if str.isalpha(self.cpf):
-            raise ValidationError(f'O cpf não pode conter letras')
-
 
     def __str__(self):
         return self.nome
@@ -216,7 +212,8 @@ class Pacientes(models.Model):
         max_length=12,
         verbose_name='CPF',
         help_text='CPF do Paciente',
-        unique=True
+        unique=True,
+        validators=[validate_cpf]
     ),
     rg = models.CharField(
         max_length=10,

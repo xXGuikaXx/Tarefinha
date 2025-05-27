@@ -34,5 +34,7 @@ def validate_telefone(telefone):
     if int(telefone[:2]) not in ddds:
         raise ValidationError(f'DDD invalido')
 
-
+def validate_cpf(cpf):
+    if str(cpf).isalpha():
+        return ValidationError(f'O cpf não pode conter letras')
 
